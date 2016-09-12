@@ -1,0 +1,51 @@
+package com.github.begoodyourself.core.bo;
+
+import com.google.protobuf.GeneratedMessageV3;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+/**
+ * Created with simplerpc0
+ * AUTHOR ; BEGOODYOURSELF
+ * DATE : 2016/9/12
+ */
+public class RequestWrapper extends MessageWrapper<RequestWrapper>{
+    private String serviceName;
+    private String methodName;
+
+    public ByteBuf encode() {
+        byte[] bodies = content.toByteArray();
+        byte[] serviceBytes = serviceName.getBytes();
+        byte[] methodBytes = methodName.getBytes();
+        byte[] protoNameBytes = content.getClass().getName().getBytes();
+        ByteBuf buf = Unpooled.buffer(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + 4 + 3);
+
+        buf.writeInt(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + 3);
+
+        buf.writeByte(serviceBytes.length);
+        buf.writeBytes(serviceBytes);
+
+        buf.writeByte(methodBytes.length);
+        buf.writeBytes(methodBytes);
+
+        buf.writeByte(protoNameBytes.length);
+        buf.writeBytes(protoNameBytes);
+
+        buf.writeBytes(bodies);
+        return buf;
+    }
+
+    public RequestWrapper decode(ByteBuf src) {
+        serviceName = new String (readBytes(src));
+        methodName = new String (readBytes(src));
+        String protoName = new String (readBytes(src));
+        byte[] bytes = new byte[src.readableBytes()];
+        src.readBytes(bytes, 0, bytes.length);
+        try {
+            content = (GeneratedMessageV3) get(protoName).toBuilder().mergeFrom(bytes).build();
+            return this;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+}
