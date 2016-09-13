@@ -1,4 +1,7 @@
+import com.github.begoodyourself.proxy.CglibProxy;
 import com.github.begoodyourself.proxy.JavaDynamicProxy;
+import com.github.begoodyourself.sample.pro.*;
+import com.github.begoodyourself.sample.pro.CalService;
 
 /**
  * Created with simplerpc0
@@ -8,7 +11,11 @@ import com.github.begoodyourself.proxy.JavaDynamicProxy;
 public class Test {
 
     public static void main(String[] args) {
-       CalSer c = (CalSer) JavaDynamicProxy.proxy(CalSer.class);
-        c.aa();
+        System.out.println(((CalService)JavaDynamicProxy.proxy(CalService.class)).aa(
+                "javaPrxoy",100,"hhhhaaaaaa",11111211, AddressBookProtos.Person.PhoneType.MOBILE
+        ));
+        System.out.println(((CalService)CglibProxy.proxy(CalService.class)).aa(
+                "cglibProxy",100,"hhhhaaaaaa",11111211, AddressBookProtos.Person.PhoneType.MOBILE
+        ));
     }
 }

@@ -64,4 +64,13 @@ public class RequestWrapper extends MessageWrapper<RequestWrapper>{
     public void setMethodName(String methodName) {
         this.methodName = methodName;
     }
+
+    @Override
+    public String toString() {
+        return new org.apache.commons.lang3.builder.ToStringBuilder(this)
+                .append("serviceName", serviceName)
+                .append("methodName", methodName)
+                .append("content", content)
+                .toString();
+    }
 }
