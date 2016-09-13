@@ -48,4 +48,20 @@ public class RequestWrapper extends MessageWrapper<RequestWrapper>{
             throw new RuntimeException(e);
         }
     }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
 }

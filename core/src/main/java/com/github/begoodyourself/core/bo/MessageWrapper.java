@@ -38,4 +38,12 @@ public abstract class MessageWrapper<T> {
         }
         return instace;
     }
+
+    public GeneratedMessageV3 getContent() {
+        return content;
+    }
+
+    public void setContent(GeneratedMessageV3 content) {
+        this.content = content;
+    }
 }
