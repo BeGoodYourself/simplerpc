@@ -5,9 +5,11 @@ import com.github.begoodyourself.core.bo.RpcMethod;
 import com.github.begoodyourself.util.ContextUtil;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.ProtocolMessageEnum;
 import io.netty.channel.Channel;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * Created with simplerpc0
@@ -23,10 +25,15 @@ public class RpcInvokeHandler {
             throw new RuntimeException();
         }
         GeneratedMessageV3 instance = ContextUtil.get(rpcMethod.args().getName());
-        GeneratedMessageV3.Builder  builder = (GeneratedMessageV3.Builder)instance.toBuilder();
-        FieldDescriptor[] fieldDescriptorList = (FieldDescriptor[])builder.getAllFields().keySet().toArray(new FieldDescriptor[0]);
-        for (int i = 0; i < fieldDescriptorList.length; i++) {
-            builder.setField(fieldDescriptorList[i], args[i]);
+        //GeneratedMessageV3.Builder  builder = (GeneratedMessageV3.Builder)instance.toBuilder();
+        GeneratedMessageV3.Builder builder = (GeneratedMessageV3.Builder) instance.newBuilderForType();
+        List<FieldDescriptor> fieldDescriptorList = instance.getDescriptorForType().getFields();
+        for (int i = 0; i < fieldDescriptorList.size(); i++) {
+            Object value = args[i];
+            if(value instanceof ProtocolMessageEnum){
+                value = ((ProtocolMessageEnum)value).getValueDescriptor();
+            }
+            builder.setField(fieldDescriptorList.get(i),value);
         }
 
         RequestWrapper requestWrapper = new RequestWrapper();

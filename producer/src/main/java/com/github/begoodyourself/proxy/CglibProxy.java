@@ -15,10 +15,6 @@ import java.lang.reflect.Method;
  */
 public class CglibProxy extends RpcInvokeHandler implements MethodInterceptor{
 
-    public static void main(String[] args) {
-
-    }
-
     public static Object proxy(Class interfaceCls){
         Enhancer en = new Enhancer();
         //进行代理
