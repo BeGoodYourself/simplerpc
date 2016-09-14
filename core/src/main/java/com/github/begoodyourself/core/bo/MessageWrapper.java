@@ -1,10 +1,8 @@
 package com.github.begoodyourself.core.bo;
 
+import com.github.begoodyourself.util.ContextUtil;
 import com.google.protobuf.GeneratedMessageV3;
 import io.netty.buffer.ByteBuf;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with simplerpc0
@@ -12,9 +10,8 @@ import java.util.Map;
  * DATE : 2016/9/12
  */
 public abstract class MessageWrapper<T> {
-    protected volatile static Map<String, GeneratedMessageV3> generatedMessageV3MapCaches = new HashMap<String, GeneratedMessageV3>();
     protected GeneratedMessageV3 content;
-
+    protected String messageId;
     public abstract ByteBuf encode();
 
     public abstract T decode(ByteBuf src);
@@ -26,17 +23,7 @@ public abstract class MessageWrapper<T> {
     }
 
     protected GeneratedMessageV3 get(String clsName) throws  Exception{
-        GeneratedMessageV3 instace = generatedMessageV3MapCaches.get(clsName);
-        if(instace == null){
-            synchronized (MessageWrapper.class){
-                instace = generatedMessageV3MapCaches.get(clsName);
-                if(instace == null){
-                    instace = (GeneratedMessageV3) Class.forName(clsName).getMethod("getDefaultInstance").invoke(null);
-                    generatedMessageV3MapCaches.put(clsName, instace);
-                }
-            }
-        }
-        return instace;
+        return ContextUtil.get(clsName);
     }
 
     public GeneratedMessageV3 getContent() {
@@ -45,5 +32,13 @@ public abstract class MessageWrapper<T> {
 
     public void setContent(GeneratedMessageV3 content) {
         this.content = content;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 }

@@ -17,9 +17,15 @@ public class RequestWrapper extends MessageWrapper<RequestWrapper>{
         byte[] serviceBytes = serviceName.getBytes();
         byte[] methodBytes = methodName.getBytes();
         byte[] protoNameBytes = content.getClass().getName().getBytes();
-        ByteBuf buf = Unpooled.buffer(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + 4 + 3);
 
-        buf.writeInt(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + 3);
+        byte[] messageIdBytes = messageId.getBytes();
+
+        ByteBuf buf = Unpooled.buffer(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + 4 + 4);
+
+        buf.writeInt(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + 4);
+
+        buf.writeByte(messageIdBytes.length);
+        buf.writeBytes(messageIdBytes);
 
         buf.writeByte(serviceBytes.length);
         buf.writeBytes(serviceBytes);
@@ -35,6 +41,7 @@ public class RequestWrapper extends MessageWrapper<RequestWrapper>{
     }
 
     public RequestWrapper decode(ByteBuf src) {
+        messageId = new String(readBytes(src));
         serviceName = new String (readBytes(src));
         methodName = new String (readBytes(src));
         String protoName = new String (readBytes(src));
@@ -68,6 +75,7 @@ public class RequestWrapper extends MessageWrapper<RequestWrapper>{
     @Override
     public String toString() {
         return new org.apache.commons.lang3.builder.ToStringBuilder(this)
+                .append("messageId", messageId)
                 .append("serviceName", serviceName)
                 .append("methodName", methodName)
                 .append("content", content)

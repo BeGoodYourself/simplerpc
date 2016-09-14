@@ -1,6 +1,6 @@
 package com.github.begoodyourself.core.codec;
 
-import com.github.begoodyourself.core.bo.ResponeWrapper;
+import com.github.begoodyourself.core.bo.ResponseWrapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,6 +15,6 @@ import java.util.List;
  */
 public class ProtobufResponeDecoder extends ByteToMessageDecoder{
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        out.add(new ResponeWrapper().decode(Unpooled.copiedBuffer(in)));
+        out.add(new ResponseWrapper().decode(Unpooled.copiedBuffer(in)));
     }
 }

@@ -1,5 +1,6 @@
 package com.github.begoodyourself.proxy;
 
+import com.github.begoodyourself.net.Producer;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -15,11 +16,13 @@ import java.lang.reflect.Method;
  */
 public class CglibProxy extends RpcInvokeHandler implements MethodInterceptor{
 
-    public static Object proxy(Class interfaceCls){
+    public static Object proxy(Class interfaceCls, Producer producer){
         Enhancer en = new Enhancer();
         //进行代理
         en.setSuperclass(interfaceCls);
-        en.setCallback(new CglibProxy());
+        CglibProxy callback = new CglibProxy();
+        callback.setProducer(producer);
+        en.setCallback(callback);
         return en.create();
     }
 

@@ -2,11 +2,11 @@ package com.github.begoodyourself.proxy;
 
 import com.github.begoodyourself.core.bo.RequestWrapper;
 import com.github.begoodyourself.core.bo.RpcMethod;
+import com.github.begoodyourself.net.Producer;
 import com.github.begoodyourself.util.ContextUtil;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.ProtocolMessageEnum;
-import io.netty.channel.Channel;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -17,7 +17,11 @@ import java.util.List;
  * DATE : 2016/9/13
  */
 public class RpcInvokeHandler {
-    private Channel channel;
+    private Producer producer;
+
+    public void setProducer(Producer producer) {
+        this.producer = producer;
+    }
 
     protected Object invoke(Method method, Object[] args) throws Throwable {
         RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
@@ -25,7 +29,6 @@ public class RpcInvokeHandler {
             throw new RuntimeException();
         }
         GeneratedMessageV3 instance = ContextUtil.get(rpcMethod.args().getName());
-        //GeneratedMessageV3.Builder  builder = (GeneratedMessageV3.Builder)instance.toBuilder();
         GeneratedMessageV3.Builder builder = (GeneratedMessageV3.Builder) instance.newBuilderForType();
         List<FieldDescriptor> fieldDescriptorList = instance.getDescriptorForType().getFields();
         for (int i = 0; i < fieldDescriptorList.size(); i++) {
@@ -40,7 +43,6 @@ public class RpcInvokeHandler {
         requestWrapper.setContent((GeneratedMessageV3) builder.build());
         requestWrapper.setMethodName(method.getName());
         requestWrapper.setServiceName(method.getDeclaringClass().getName());
-        //channel.writeAndFlush(requestWrapper);
-        return requestWrapper;
+        return producer.write(requestWrapper);
     }
 }
