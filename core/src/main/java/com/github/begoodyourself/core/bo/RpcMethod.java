@@ -1,5 +1,7 @@
 package com.github.begoodyourself.core.bo;
 
+import com.google.protobuf.GeneratedMessageV3;
+
 import java.lang.annotation.*;
 
 /**
@@ -11,5 +13,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Documented
 public @interface RpcMethod {
-    Class args();
+    Class<? extends GeneratedMessageV3> args();
 }

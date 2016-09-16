@@ -1,0 +1,22 @@
+syntax = "proto3";
+//package tutorial;
+// [END declaration]
+
+// [START java_declaration]
+option java_package = "com.github.begoodyourself.api.sample";
+option java_outer_classname = "Resp";
+// [END java_declaration]
+
+// [START csharp_declaration]
+//option csharp_namespace = "Google.Protobuf.Examples.AddressBook";
+// [END csharp_declaration]
+
+// [START messages]
+message RespErrorCode {
+    int32 errcode = 1;
+    string errMsg = 2;
+}
+
+message CalRespMessage{
+   int32 result = 1;
+}

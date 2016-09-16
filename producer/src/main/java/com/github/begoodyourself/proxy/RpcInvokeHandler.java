@@ -10,6 +10,7 @@ import com.google.protobuf.ProtocolMessageEnum;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created with simplerpc0
@@ -40,6 +41,7 @@ public class RpcInvokeHandler {
         }
 
         RequestWrapper requestWrapper = new RequestWrapper();
+        requestWrapper.setMessageId(UUID.randomUUID().toString());
         requestWrapper.setContent((GeneratedMessageV3) builder.build());
         requestWrapper.setMethodName(method.getName());
         requestWrapper.setServiceName(method.getDeclaringClass().getName());

@@ -20,9 +20,9 @@ public class RequestWrapper extends MessageWrapper<RequestWrapper>{
 
         byte[] messageIdBytes = messageId.getBytes();
 
-        ByteBuf buf = Unpooled.buffer(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + 4 + 4);
+        ByteBuf buf = Unpooled.buffer(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + messageIdBytes.length + 4 + 4);
 
-        buf.writeInt(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + 4);
+        buf.writeInt(bodies.length + protoNameBytes.length + serviceBytes.length + methodBytes.length + messageIdBytes.length + 4);
 
         buf.writeByte(messageIdBytes.length);
         buf.writeBytes(messageIdBytes);
@@ -80,5 +80,9 @@ public class RequestWrapper extends MessageWrapper<RequestWrapper>{
                 .append("methodName", methodName)
                 .append("content", content)
                 .toString();
+    }
+
+    public String getKey(){
+        return serviceName+"_"+methodName+"_"+ content.getDescriptorForType().getFields().size();
     }
 }

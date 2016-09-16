@@ -3,6 +3,8 @@ package com.github.begoodyourself.core.bo;
 import com.google.protobuf.GeneratedMessageV3;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * Created with simplerpc0
@@ -14,10 +16,10 @@ public class ResponseWrapper extends MessageWrapper<ResponseWrapper>{
     private String errMsg;
 
     public ByteBuf encode() {
-        byte[] contentBytes = content.toByteArray();
+        byte[] contentBytes = content == null ? new byte[0] : content.toByteArray();
         byte[] errMessageBytes =errMsg == null ? new byte[0] : errMsg.getBytes();
         byte[] messageIdBytes = messageId.getBytes();
-        byte[] protoNameBytes = content.getClass().getName().getBytes();
+        byte[] protoNameBytes = content == null ? new byte[0] : content.getClass().getName().getBytes();
         ByteBuf buf = Unpooled.buffer(contentBytes.length + 2 + errMessageBytes.length + messageIdBytes.length + protoNameBytes.length + 3 + 4);
         buf.writeInt(contentBytes.length + 2 + errMessageBytes.length + messageIdBytes.length + protoNameBytes.length + 3 );
 
@@ -41,12 +43,14 @@ public class ResponseWrapper extends MessageWrapper<ResponseWrapper>{
         errcode = src.readShort();
         errMsg = new String(readBytes(src));
         String protoName = new String(readBytes(src));
+        if(StringUtils.isEmpty(protoName))
+            return this;
         GeneratedMessageV3 proto = null;
         try {
             proto = get(protoName);
             byte[] dst = new byte[src.readableBytes()];
             src.readBytes(dst, 0, dst.length);
-            content = (GeneratedMessageV3) proto.toBuilder().mergeFrom(dst);
+            content = (GeneratedMessageV3) proto.toBuilder().mergeFrom(dst).build();
             return this;
         } catch (Exception e) {
             e.printStackTrace();

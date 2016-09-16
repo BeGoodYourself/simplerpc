@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class ProtobufRequestDecoder extends ByteToMessageDecoder{
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        out.add(new RequestWrapper().decode(Unpooled.copiedBuffer(in)));
+        if(in.readableBytes() > 0)
+        out.add(new RequestWrapper().decode(in));
+        //in.retain();
     }
 }

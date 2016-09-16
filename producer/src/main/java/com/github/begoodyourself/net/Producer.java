@@ -56,10 +56,10 @@ public class Producer implements RpcEventListener{
         );
 
 
-        ChannelFuture cf = bootstrap.connect(new InetSocketAddress(ar[0],Integer.parseInt(ar[1]))).syncUninterruptibly();
+       bootstrap.connect(new InetSocketAddress(ar[0],Integer.parseInt(ar[1]))).syncUninterruptibly();
         System.out.println("Producer start:"+ consumerServer);
 
-        cf.channel().closeFuture().sync();
+        //cf.channel().closeFuture().sync();
     }
 
 
@@ -76,16 +76,20 @@ public class Producer implements RpcEventListener{
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, ResponseWrapper msg) {
+        System.out.println(msg.getMessageId());
         SyncRpcResult rpcResult = rpcResults.remove(msg.getMessageId());
         if(rpcResult != null){
-            rpcResult.setRespone(msg);
+            rpcResult.setResponse(msg);
         }
     }
 
     public Object write(RequestWrapper msg) throws Exception{
+        System.out.println(msg.getMessageId());
         SyncRpcResult rpcResult = new SyncRpcResult();
-        rpcResults.put(msg.getMessageId(), new SyncRpcResult());
+        rpcResults.put(msg.getMessageId(), rpcResult);
         ctx.writeAndFlush(msg);
-        return rpcResult.result();
+        Object result = rpcResult.result();
+        //rpcResults.remove(msg.getMessageId());
+        return result;
     }
 }

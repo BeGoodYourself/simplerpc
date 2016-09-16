@@ -3,8 +3,8 @@ syntax = "proto3";
 // [END declaration]
 
 // [START java_declaration]
-option java_package = "com.github.begoodyourself.sample.pro";
-option java_outer_classname = "AddressBookProtos";
+option java_package = "com.github.begoodyourself.api.sample";
+option java_outer_classname = "Req";
 // [END java_declaration]
 
 // [START csharp_declaration]
