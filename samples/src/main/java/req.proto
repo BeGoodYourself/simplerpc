@@ -3,7 +3,7 @@ syntax = "proto3";
 // [END declaration]
 
 // [START java_declaration]
-option java_package = "com.github.begoodyourself.api.sample";
+option java_package = "com.github.begoodyourself.samples";
 option java_outer_classname = "Req";
 // [END java_declaration]
 
@@ -25,4 +25,5 @@ message Person {
      }
 
    PhoneType type =5;
+   bytes data = 6;
 }
